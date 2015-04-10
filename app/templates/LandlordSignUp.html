@@ -7,18 +7,30 @@
 		<p>
 			Email:<br>
 			{{ form.email(size=80) }}<br>
+			{% for error in form.email.errors %}
+				<span style="color: red;">[{{error}}]</span>
+			{% endfor %}
 		</p>
 		<p>
 			Property Name:<br>
 			{{ form.property_name(size=80) }}<br>
+			{% for error in form.property_name.errors %}
+				<span style="color: red;">[{{error}}]</span>
+			{% endfor %}
 		</p>
 		<p>
 			Password:<br>
 			{{ form.password(size=80) }}<br>
+			{% for error in form.password.errors %}
+				<span style="color: red;">[{{error}}]</span>
+			{% endfor %}
 		</p>
 		<p>
 			Verify Password:<br>
 			{{ form.verifyPass(size=80) }}<br>
+			{% for error in form.verifyPass.errors %}
+				<span style="color: red;">[{{error}}]</span>
+			{% endfor %}
 		</p>
 		<p><input type="submit" value="Sign Up"></p>
 	</form>
