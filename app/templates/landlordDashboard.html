@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>{{g.user.property_name}}</h1>
+<h3>Your Registered Tenants</h3>
+<table>
+{% for tenant in tenants %}
+
+	<tr>
+		{% if tenant.unit %}
+		<td>
+			<p>Unit: {{tenant.unit}}</p>
+		</td>	
+		{% endif %}
+		<td>
+			<p>{{tenant.email}}</p>
+		</td>
+	</tr>
+{% endfor %}
+</table>
+{% endblock %}

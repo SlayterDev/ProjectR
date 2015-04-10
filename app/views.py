@@ -79,7 +79,7 @@ def userSignUp():
 		db.session.commit()
 		login_user(user, remember=False)
 		flash('Signed up and logged in')
-		return redirect(url_for('index'))
+		return redirect(url_for('userDashboard'))
 
 	return render_template('UserSignup.html', title='Sign Up',
 							form=form)
@@ -156,3 +156,12 @@ def setProperty(name):
 	db.session.commit()
 
 	return redirect(url_for('userDashboard'))
+
+@app.route('/landlordDashboard')
+@login_required
+def landlordDashboard():
+	tenants = g.user.tenants
+
+	return render_template('landlordDashboard.html', title='Dashboard',
+							tenants=tenants)
+

@@ -8,6 +8,7 @@ class Landlord(db.Model):
 	property_name = db.Column(db.String(140), index=True, unique=True)
 	stripe_id = db.Column(db.String(140))
 	stripe_key = db.Column(db.String(140))
+	unit = db.Column(db.String(10))
 	tenants = db.relationship('User', backref='landlord', lazy='dynamic')
 
 	def is_authenticated(self):
@@ -18,6 +19,9 @@ class Landlord(db.Model):
 
 	def is_anonymous(self):
 		return False
+
+	def is_landlord(self):
+		return True
 
 	def get_id(self):
 		try:
@@ -48,6 +52,9 @@ class User(db.Model):
 		return True
 
 	def is_anonymous(self):
+		return False
+
+	def is_landlord(self):
 		return False
 
 	def get_id(self):
