@@ -8,7 +8,6 @@ class Landlord(db.Model):
 	property_name = db.Column(db.String(140), index=True, unique=True)
 	stripe_id = db.Column(db.String(140))
 	stripe_key = db.Column(db.String(140))
-	unit = db.Column(db.String(10))
 	tenants = db.relationship('User', backref='landlord', lazy='dynamic')
 
 	def is_authenticated(self):
@@ -44,6 +43,7 @@ class User(db.Model):
 	password = db.Column(db.String(154))
 	email = db.Column(db.String(120), index=True, unique=True)
 	landlord_id = db.Column(db.Integer, db.ForeignKey('landlord.id'))
+	unit = db.Column(db.String(10))
 
 	def is_authenticated(self):
 		return True

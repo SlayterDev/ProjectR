@@ -4,18 +4,23 @@
 <h1>{{g.user.property_name}}</h1>
 <h3>Your Registered Tenants</h3>
 <table>
+<tr>
+<td><div><strong>Unit</strong></div></td>
+<td><div style="padding-left: 5em;"><strong>Email</strong></div></td>
+</tr>
 {% for tenant in tenants %}
-
-	<tr>
-		{% if tenant.unit %}
-		<td>
-			<p>Unit: {{tenant.unit}}</p>
-		</td>	
-		{% endif %}
-		<td>
-			<p>{{tenant.email}}</p>
-		</td>
-	</tr>
+<tr>
+	<td>
+		<div>
+		<p>{{tenant.unit}}</p>
+		</div>
+	</td>	
+	<td>
+		<div style="padding-left: 5em;">
+		<p>{{tenant.email}}</p>
+		</div>
+	</td>
+</tr>
 {% endfor %}
 </table>
 {% endblock %}

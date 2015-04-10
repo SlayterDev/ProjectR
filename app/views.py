@@ -3,6 +3,7 @@ from flask.ext.login import login_user, logout_user, current_user, login_require
 from app import app, db, lm
 from .models import User, Landlord
 from .forms import SignupUserForm, SignupLandlordForm, LoginLandlordForm, LoginUserForm
+from .forms import PropertySelectForm
 
 @lm.user_loader
 def load_user(id):
@@ -48,7 +49,7 @@ def landlordSignUp():
 		db.session.commit()
 		login_user(landlord, remember=False)
 		flash('Signed up and logged in!')
-		return redirect(url_for('index'))
+		return redirect(url_for('landlordDashboard'))
 
 	return render_template('LandlordSignUp.html', title='Sign Up',
 							form=form)
@@ -101,7 +102,7 @@ def loginLandlord():
 
 		login_user(landlord, remember=False)
 		flash('Logged in successfully')
-		return redirect(url_for('index'))
+		return redirect(url_for('landlordDashboard'))
 
 	return render_template('LoginLandlord.html', title='Login',
 							form=form)
@@ -141,7 +142,7 @@ def chooseProperty():
 	return render_template('ChooseProperty.html', title='Choose Property',
 							properties=properties)
 
-@app.route('/setProperty/<name>')
+@app.route('/setProperty/<name>', methods=['GET', 'POST'])
 @login_required
 def setProperty(name):
 	landlord = Landlord.query.filter_by(property_name=name).first()
@@ -152,10 +153,18 @@ def setProperty(name):
 
 	user = g.user
 	user.landlord = landlord
-	db.session.add(user)
-	db.session.commit()
 
-	return redirect(url_for('userDashboard'))
+	form = PropertySelectForm()
+	if form.validate_on_submit():
+		user.unit = form.unit.data
+		db.session.add(user)
+		db.session.commit()
+
+		return redirect(url_for('userDashboard'))
+
+
+	return render_template('PropertySelect.html', title='Enter Unit Number',
+							name=name, form=form)
 
 @app.route('/landlordDashboard')
 @login_required

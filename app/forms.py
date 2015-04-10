@@ -21,3 +21,6 @@ class LoginLandlordForm(Form):
 class LoginUserForm(Form):
 	username = StringField('username', validators=[DataRequired()])
 	password = PasswordField('password', validators=[DataRequired()])
+
+class PropertySelectForm(Form):
+	unit = StringField('unit', validators=[DataRequired()])
