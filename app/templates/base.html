@@ -9,6 +9,7 @@
 	<body>
 		<div>Project R: <a href="/index">Home</a> | 
 			{% if g.user.is_authenticated() %}
+			<a href="{{url_for('userDashboard')}}"> | </a>
 			<a href="{{url_for('logout')}}">Logout</a>
 			{% else %}
 			<a href="{{url_for('userSignUp')}}">User Sign Up</a> | <a href="{{url_for('landlordSignUp')}}">Landlord Sign Up</a> | <a href="{{url_for('loginLandlord')}}">Landlord Login</a> | <a href="{{url_for('loginUser')}}"> User Login</a>

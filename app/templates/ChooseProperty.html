@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Choose Your Property</h1>
+{% for property in properties %}
+	<p><a href="{{url_for('setProperty', name=property.property_name)}}">{{property.property_name}}</a></p>
+{% endfor %}
+{% endblock %}

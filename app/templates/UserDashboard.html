@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Hello, {{g.user.username}}</h1>
+
+<p>
+	{% if g.user.landlord %}
+	You live at {{g.user.landlord.property_name}}
+	{% else %}
+	You have not selected your property yet. <a href="{{url_for('chooseProperty')}}">Select your Property</a>
+	{% endif %}
+</p>
+{% endblock %}

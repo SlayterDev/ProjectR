@@ -123,7 +123,36 @@ def loginUser():
 
 		login_user(user, remember=False)
 		flash('Logged in successfully')
-		return redirect(url_for('index'))
+		return redirect(url_for('userDashboard'))
 
 	return render_template('LoginUser.html', title='Login',
 							form=form)
+
+@app.route('/userDashboard')
+@login_required
+def userDashboard():
+	return render_template('UserDashboard.html', title='Dashboard')
+
+@app.route('/chooseProperty')
+@login_required
+def chooseProperty():
+	properties = Landlord.query.all()
+
+	return render_template('ChooseProperty.html', title='Choose Property',
+							properties=properties)
+
+@app.route('/setProperty/<name>')
+@login_required
+def setProperty(name):
+	landlord = Landlord.query.filter_by(property_name=name).first()
+
+	if landlord is None:
+		flash('An error has occured. That property doesn\'t exist')
+		return redirect(url_for('chooseProperty'))
+
+	user = g.user
+	user.landlord = landlord
+	db.session.add(user)
+	db.session.commit()
+
+	return redirect(url_for('userDashboard'))
