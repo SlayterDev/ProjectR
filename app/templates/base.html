@@ -1,0 +1,14 @@
+<html>
+	<head>
+		{% if title %}
+		<title>{{ title }} - Project R</title>
+		{% else %}
+		<title>Welcome to Project R</title>
+		{% endif %}
+	</head>
+	<body>
+		<div>Project R: <a href="/index">Home</a></div>
+		<hr>
+		{% block content %}{% endblock %}
+	</body>
+</html>
