@@ -1,4 +1,5 @@
 from app import db
+from passlib.apps import custom_app_context as pwd_context
 
 class Landlord(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
@@ -9,6 +10,27 @@ class Landlord(db.Model):
 	stripe_key = db.Column(db.String(140))
 	tenants = db.relationship('User', backref='landlord', lazy='dynamic')
 
+	def is_authenticated(self):
+		return True
+
+	def is_active(self):
+		return True
+
+	def is_anonymous(self):
+		return False
+
+	def get_id(self):
+		try:
+			return unicode(str(self.id)+' l')
+		except NameError:
+			return str(self.id+' l')
+
+	def hash_password(self, password):
+		self.password = pwd_context.encrypt(password)
+
+	def verify_password(self, password):
+		return pwd_context.verify(password, self.password)
+
 	def __repr__(self):
 		return '<Landlord %r>' % (self.property_name)
 
@@ -18,6 +40,27 @@ class User(db.Model):
 	password = db.Column(db.String(154))
 	email = db.Column(db.String(120), index=True, unique=True)
 	landlord_id = db.Column(db.Integer, db.ForeignKey('landlord.id'))
+
+	def is_authenticated(self):
+		return True
+
+	def is_active(self):
+		return True
+
+	def is_anonymous(self):
+		return False
+
+	def get_id(self):
+		try:
+			return unicode(str(self.id)+' u')
+		except NameError:
+			return str(self.id+' u')
+
+	def hash_password(self, password):
+		self.password = pwd_context.encrypt(password)
+
+	def verify_password(self, password):
+		return pwd_context.verify(password, self.password)
 
 	def __repr__(self):
 		return '<User %r>' % (self.username)

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block content %}
+	<h1>Landlord Sign Up</h1>
+	<form action="" method="post" name="signup">
+		{{ form.hidden_tag() }}
+		<p>
+			Email:<br>
+			{{ form.email(size=80) }}<br>
+		</p>
+		<p>
+			Property Name:<br>
+			{{ form.property_name(size=80) }}<br>
+		</p>
+		<p>
+			Password:<br>
+			{{ form.password(size=80) }}<br>
+		</p>
+		<p>
+			Verify Password:<br>
+			{{ form.verifyPass(size=80) }}<br>
+		</p>
+		<p><input type="submit" value="Sign Up"></p>
+	</form>
+{% endblock %}
