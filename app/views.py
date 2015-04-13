@@ -238,7 +238,8 @@ def charge():
 			source=token,
 			stripe_account=landlord.stripe_id,
 			description=g.user.email,
-			application_fee=int(amount*0.01))
+			application_fee=int(amount*0.01),
+			statement_descriptor=landlord.property_name)
 
 	print charge
 
