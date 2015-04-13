@@ -230,7 +230,7 @@ def payrent():
 def charge():
 	amount = request.form['amount']
 	try:
-		amount = int(float(amount)*100)
+		amount = int(float(amount)*100) # convert amount to cents
 	except ValueError, e:
 		flash('Invalid amount entered')
 		return redirect(url_for('payrent'))
@@ -252,7 +252,7 @@ def charge():
 			source=token,
 			stripe_account=landlord.stripe_id,
 			description=g.user.email,
-			application_fee=int(amount*0.01),
+			application_fee=int(amount*0.01), # 1% fee
 			statement_descriptor=landlord.property_name)
 
 	print charge
