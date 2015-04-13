@@ -2,7 +2,9 @@
 
 {% block content %}
 <h1>Choose Your Property</h1>
-{% for property in properties %}
+{% for property in properties.items %}
 	<p><a href="{{url_for('setProperty', name=property.property_name)}}">{{property.property_name}}</a></p>
 {% endfor %}
+{% if properties.has_prev %}<a href="{{url_for('chooseProperty', page=properties.prev_num)}}">&lt;&lt; Prev</a>{% else %}&lt;&lt; Prev{% endif %} | 
+{% if properties.has_next %}<a href="{{url_for('chooseProperty', page=properties.next_num)}}">Next &gt;&gt;</a>{% else %}Next &gt;&gt;{% endif %}
 {% endblock %}
