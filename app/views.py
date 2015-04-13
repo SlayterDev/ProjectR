@@ -174,7 +174,7 @@ def setProperty(name):
 @app.route('/landlordDashboard')
 @login_required
 def landlordDashboard():
-	tenants = g.user.tenants
+	tenants = g.user.tenants.order_by(User.unit.asc())
 
 	return render_template('landlordDashboard.html', title='Dashboard',
 							tenants=tenants, clientid=STRIPE_CLIENT_ID)
@@ -218,6 +218,10 @@ def stripeRedirect():
 @app.route('/payrent', methods=['GET', 'POST'])
 @login_required
 def payrent():
+	if g.user.landlord.stripe_id is None:
+		flash('This property has not been set up to recieve payments yet.')
+		return redirect(url_for('userDashboard'))
+
 	return render_template('Payrent.html', title='Pay Rent',
 							key=STRIPE_PUBLISHABLE)
 

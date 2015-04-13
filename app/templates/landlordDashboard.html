@@ -3,7 +3,7 @@
 {% block content %}
 <h1>{{g.user.property_name}}</h1>
 {% if g.user.stripe_key %}
-<p>You are connected with stripe!</p>
+<p>You are connected with <a href="https://dashboard.stripe.com" target="_blank">stripe!</a></p>
 {% else %}
 <p>Before you can start accepting payments from users, you must create an account with Stripe and connect it to our service.</p>
 <a href="https://connect.stripe.com/oauth/authorize?response_type=code&client_id={{clientid}}&scope=read_write" class="stripe-connect"><span>Connect with Stripe</span></a>
