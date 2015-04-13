@@ -1,9 +1,11 @@
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm
+from config import STRIPE_CLIENT_ID, STRIPE_SECRET
 from .models import User, Landlord
 from .forms import SignupUserForm, SignupLandlordForm, LoginLandlordForm, LoginUserForm
 from .forms import PropertySelectForm
+import requests
 
 @lm.user_loader
 def load_user(id):
@@ -172,5 +174,40 @@ def landlordDashboard():
 	tenants = g.user.tenants
 
 	return render_template('landlordDashboard.html', title='Dashboard',
-							tenants=tenants)
+							tenants=tenants, clientid=STRIPE_CLIENT_ID)
 
+@app.route('/stripeRedirect')
+def stripeRedirect():
+	error = request.args.get('error')
+	if error is not None:
+		flash('An error has occured')
+		return redirect(url_for('landlordDashboard'))
+
+	code = request.args.get('code')
+	payload = {
+		'grant_type': 'authorization_code',
+        'client_id': STRIPE_CLIENT_ID,
+        'client_secret': STRIPE_SECRET,
+        'code': code
+	}
+
+	resp = requests.post('https://connect.stripe.com/oauth/token', 
+							params=payload)
+
+	token = resp.json().get('access_token')
+	key = resp.json().get('stripe_publishable_key')
+	user_id = resp.json().get('stripe_user_id')
+	refresh_tok = resp.json().get('refresh_token')
+	landlord = g.user
+	if not landlord.is_landlord(): # sanity check
+		flash('This user can\'t do that')
+		return redirect('index')
+
+	landlord.stripe_key = key
+	landlord.stripe_id = user_id
+	landlord.stripe_access = token
+	landlord.stripe_refresh = refresh_tok
+	db.session.add(landlord)
+	db.session.commit()
+
+	return redirect(url_for('landlordDashboard'))
