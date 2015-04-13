@@ -2,6 +2,13 @@
 
 {% block content %}
 <h1>{{g.user.property_name}}</h1>
+{% if g.user.stripe_key %}
+<p>You are connected with stripe!</p>
+{% else %}
+<p>Before you can start accepting payments from users, you must create an account with Stripe and connect it to our service.</p>
+<a href="https://connect.stripe.com/oauth/authorize?response_type=code&client_id={{clientid}}&scope=read_write" class="stripe-connect"><span>Connect with Stripe</span></a>
+{% endif %}
+<br><br>
 <h3>Your Registered Tenants</h3>
 <table>
 <tr>

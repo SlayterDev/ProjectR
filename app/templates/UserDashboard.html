@@ -10,4 +10,9 @@
 	You have not selected your property yet. <a href="{{url_for('chooseProperty')}}">Select your Property</a>
 	{% endif %}
 </p>
+{% if g.user.landlord %}
+<p>
+<a href="{{url_for('payrent')}}">Make a payment</a>
+</p>
+{% endif %}
 {% endblock %}

@@ -8,6 +8,8 @@ class Landlord(db.Model):
 	property_name = db.Column(db.String(140), index=True, unique=True)
 	stripe_id = db.Column(db.String(140))
 	stripe_key = db.Column(db.String(140))
+	stripe_refresh = db.Column(db.String(140))
+	stripe_access = db.Column(db.String(140))
 	tenants = db.relationship('User', backref='landlord', lazy='dynamic')
 
 	def is_authenticated(self):
