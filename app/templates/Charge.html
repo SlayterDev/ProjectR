@@ -1,0 +1,6 @@
+{% include "base.html" %}
+
+{% block content %}
+<h1>Payment Successful!</h1>
+<p>You have payed ${{amount}} to "{{g.user.landlord.property_name}}".</p>
+{% endblock %}

@@ -1,11 +1,12 @@
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm
-from config import STRIPE_CLIENT_ID, STRIPE_SECRET
+from config import STRIPE_CLIENT_ID, STRIPE_SECRET, STRIPE_PUBLISHABLE
 from .models import User, Landlord
 from .forms import SignupUserForm, SignupLandlordForm, LoginLandlordForm, LoginUserForm
 from .forms import PropertySelectForm
 import requests
+import stripe
 
 @lm.user_loader
 def load_user(id):
@@ -211,3 +212,35 @@ def stripeRedirect():
 	db.session.commit()
 
 	return redirect(url_for('landlordDashboard'))
+
+@app.route('/payrent', methods=['GET', 'POST'])
+@login_required
+def payrent():
+	return render_template('Payrent.html', title='Pay Rent',
+							key=STRIPE_PUBLISHABLE)
+
+@app.route('/charge', methods=['GET', 'POST'])
+@login_required
+def charge():
+	amount = request.form['amount']
+	amount = int(amount)*100
+
+	token = request.form['stripeToken']
+	landlord = g.user.landlord
+	if landlord is None:
+		flash('An error occured processing your payment')
+		return redirect(url_for('userDashboard'))
+
+	stripe.api_key = STRIPE_SECRET
+	charge = stripe.Charge.create(
+			amount=amount,
+			currency='usd',
+			source=token,
+			stripe_account=landlord.stripe_id,
+			description=g.user.email,
+			application_fee=int(amount*0.01))
+
+	print charge
+
+	return render_template('Charge.html', title='Payment Successful',
+							amount=int(amount/100))
