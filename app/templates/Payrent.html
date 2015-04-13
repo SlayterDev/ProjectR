@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+  <form action="/charge" method="post">
+    <article>
+      <label>
+        <span>Amount</span>
+      </label>
+      <input type="text" name="amount">
+    </article>
+
+    <br>
+    <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
+            data-key="{{ key }}"
+            data-description="Rent"></script>
+  </form>
+{% endblock %}
