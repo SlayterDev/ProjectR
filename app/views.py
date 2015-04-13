@@ -223,7 +223,15 @@ def payrent():
 @login_required
 def charge():
 	amount = request.form['amount']
-	amount = int(amount)*100
+	try:
+		amount = int(float(amount)*100)
+	except ValueError, e:
+		flash('Invalid amount entered')
+		return redirect(url_for('payrent'))
+
+	if amount < 100:
+		flash('You must enter an amount greater than $1.00')
+		return redirect(url_for('payrent'))
 
 	token = request.form['stripeToken']
 	landlord = g.user.landlord
@@ -244,4 +252,4 @@ def charge():
 	print charge
 
 	return render_template('Charge.html', title='Payment Successful',
-							amount=int(amount/100))
+							amount=float(amount/100))
