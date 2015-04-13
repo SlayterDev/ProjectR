@@ -24,3 +24,14 @@ The application is now setup. To run use `./run.py` and go to http://127.0.0.1:8
     git add .
     git commit -m "Did stuff"
     git push -u origin myFeature
+    
+### Test Info
+
+When testing payments, use the following payment info:
+
+    Card #: 4242 4242 4242 4242
+    Exp Date: Any time in the future
+    CVC: Any 3 digit number
+    
+When connecting a new landlord to Stripe, there is a link at the top of the page after clicking the 'connect' button that says "Skip this account form". Click that.
+
