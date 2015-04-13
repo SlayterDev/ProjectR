@@ -1,7 +1,7 @@
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm
-from config import STRIPE_CLIENT_ID, STRIPE_SECRET, STRIPE_PUBLISHABLE
+from config import STRIPE_CLIENT_ID, STRIPE_SECRET, STRIPE_PUBLISHABLE, ITEMS_PER_PAGE
 from .models import User, Landlord
 from .forms import SignupUserForm, SignupLandlordForm, LoginLandlordForm, LoginUserForm
 from .forms import PropertySelectForm
@@ -138,9 +138,11 @@ def userDashboard():
 	return render_template('UserDashboard.html', title='Dashboard')
 
 @app.route('/chooseProperty')
+@app.route('/chooseProperty/<int:page>')
 @login_required
-def chooseProperty():
-	properties = Landlord.query.all()
+def chooseProperty(page=1):
+	properties = Landlord.query.order_by(Landlord.property_name.asc())
+	properties = properties.paginate(page, ITEMS_PER_PAGE, False)
 
 	return render_template('ChooseProperty.html', title='Choose Property',
 							properties=properties)
