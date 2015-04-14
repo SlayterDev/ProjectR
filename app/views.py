@@ -2,7 +2,7 @@ from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm
 from config import STRIPE_CLIENT_ID, STRIPE_SECRET, STRIPE_PUBLISHABLE, ITEMS_PER_PAGE
-from .models import User, Landlord
+from .models import User, Landlord, Transaction
 from .forms import SignupUserForm, SignupLandlordForm, LoginLandlordForm, LoginUserForm
 from .forms import PropertySelectForm
 import requests
@@ -266,6 +266,14 @@ def charge():
 		error = str(charge['failure_message']) + ' ' + str(charge['failure_code'])
 		return render_template('Charge.html', title='Payment Failure',
 								error=error)
+
+	# Record charge
+	transaction = Transaction(stripe_charge=charge['id'])
+	transaction.user_id = g.user.id
+	transaction.landlord_id = landlord.id
+
+	db.session.add(transaction)
+	db.session.commit()
 
 	return render_template('Charge.html', title='Payment Successful',
 							amount=float(amount/100))
