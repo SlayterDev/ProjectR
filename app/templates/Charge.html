@@ -1,6 +1,11 @@
 {% include "base.html" %}
 
 {% block content %}
+{% if not error %}
 <h1>Payment Successful!</h1>
 <p>You have payed ${{amount}} to "{{g.user.landlord.property_name}}".</p>
+{% else %}
+<h1>Payment Failed</h1>
+<p>{{error}}</p>
+{% endif %}
 {% endblock %}

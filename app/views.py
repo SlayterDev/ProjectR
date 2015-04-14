@@ -262,6 +262,10 @@ def charge():
 			statement_descriptor=landlord.property_name)
 
 	print charge
+	if charge['failure_code'] is not None:
+		error = str(charge['failure_message']) + ' ' + str(charge['failure_code'])
+		return render_template('Charge.html', title='Payment Failure',
+								error=error)
 
 	return render_template('Charge.html', title='Payment Successful',
 							amount=float(amount/100))
