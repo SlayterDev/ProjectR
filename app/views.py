@@ -75,6 +75,12 @@ def userSignUp():
 		if form.password.data != form.verifyPass.data:
 			flash('Password fields do not match')
 			return redirect(url_for('userSignUp'))
+		if len(form.username.data) < 3:
+			flash('Username must be at least 3 characters long')
+			return redirect(url_for('userSignUp'))
+		if len(form.password.data) < 6:
+			flash('Password must be at least 6 characters long')
+			return redirect(url_for('userSignUp'))
 
 		user = User(username=form.username.data,
 					email=form.email.data)

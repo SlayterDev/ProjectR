@@ -19,7 +19,7 @@
 			{% endfor %}
 		</p>
 		<p>
-			Password:<br>
+			Password: (Must be at least 6 characters)<br>
 			{{ form.password(size=80) }}<br>
 			{% for error in form.password.errors %}
 				<span style="color: red;">[{{error}}]</span>
