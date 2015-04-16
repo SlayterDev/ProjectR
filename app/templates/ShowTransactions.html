@@ -1,0 +1,31 @@
+{% include "base.html" %}
+
+{% block content %}
+<script type="text/javascript" src="/static/js/showTransactions.js"></script>
+
+<h1>Latest Payments</h1>
+<table style="border-spacing: 10px;">
+<tr>
+	<td><strong>Date</strong></td>
+	<td><strong>Unit</strong></td>
+	<td><strong>Email</strong></td>
+	<td><strong>Amount</strong></td>
+</tr>
+{% for transaction in transactions.items %}
+	<tr>
+		<td>
+			{% if transaction.date %}
+			<p><em>{{momentjs(transaction.date).calendar()}}</em></p>
+			{% else %}
+			<p><em>N/A</em></p>
+			{% endif %}
+		</td>
+		<td>{{transaction.user.unit}}</td>
+		<td><p>{{transaction.user.email}}</p></td>
+		<td><p class="amount">{{transaction.amount}}</p></td>
+	</tr>
+{% endfor %}
+</table>
+{% if transactions.has_prev %}<a href="{{url_for('showLandlordTransactions', page=transactions.prev_num)}}">&lt;&lt; Prev</a>{% else %}&lt;&lt; Prev{% endif %} | 
+{% if transactions.has_next %}<a href="{{url_for('showLandlordTransactions', page=transactions.next_num)}}">Next &gt;&gt;</a>{% else %}Next &gt;&gt;{% endif %}
+{% endblock %}

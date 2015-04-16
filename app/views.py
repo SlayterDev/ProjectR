@@ -2,6 +2,7 @@ from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm
 from config import STRIPE_CLIENT_ID, STRIPE_SECRET, STRIPE_PUBLISHABLE, ITEMS_PER_PAGE
+from datetime import datetime
 from .models import User, Landlord, Transaction
 from .forms import SignupUserForm, SignupLandlordForm, LoginLandlordForm, LoginUserForm
 from .forms import PropertySelectForm
@@ -271,9 +272,21 @@ def charge():
 	transaction = Transaction(stripe_charge=charge['id'])
 	transaction.user_id = g.user.id
 	transaction.landlord_id = landlord.id
+	transaction.amount = amount
+	transaction.date = datetime.utcnow()
 
 	db.session.add(transaction)
 	db.session.commit()
 
 	return render_template('Charge.html', title='Payment Successful',
-							amount=float(amount/100))
+							amount=amount)
+
+@app.route('/showLandlordTransactions')
+@app.route('/showLandlordTransactions/<int:page>')
+@login_required
+def showLandlordTransactions(page=1):
+	transactions = g.user.transactions.order_by(Transaction.date.desc())
+	transactions = transactions.paginate(page, ITEMS_PER_PAGE, False)
+
+	return render_template('ShowTransactions.html', title='Show Transactions',
+							transactions=transactions)
