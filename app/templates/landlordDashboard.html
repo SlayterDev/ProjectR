@@ -11,7 +11,7 @@
 <p><a href="{{url_for('showLandlordTransactions')}}">View Latest Payments</a></p>
 <br>
 <h3>Your Registered Tenants</h3>
-<table>
+<table style="border-spacing: 10px;">
 <tr>
 <td><div><strong>Unit</strong></div></td>
 <td><div style="padding-left: 5em;"><strong>Email</strong></div></td>
@@ -19,14 +19,10 @@
 {% for tenant in tenants %}
 <tr>
 	<td>
-		<div>
 		<p>{{tenant.unit}}</p>
-		</div>
 	</td>	
 	<td>
-		<div style="padding-left: 5em;">
-		<p>{{tenant.email}}</p>
-		</div>
+		<p style="padding-left: 5em;">{{tenant.email}}</p>
 	</td>
 </tr>
 {% endfor %}
