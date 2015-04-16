@@ -1,5 +1,7 @@
-from app import db
+from app import app, db
 from passlib.apps import custom_app_context as pwd_context
+from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
+from itsdangerous import SignatureExpired, BadSignature
 
 class Landlord(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
@@ -11,6 +13,7 @@ class Landlord(db.Model):
 	stripe_refresh = db.Column(db.String(140))
 	stripe_access = db.Column(db.String(140))
 	tenants = db.relationship('User', backref='landlord', lazy='dynamic')
+	transactions = db.relationship('Transaction', backref='landlord', lazy='dynamic')
 
 	def is_authenticated(self):
 		return True
@@ -46,6 +49,7 @@ class User(db.Model):
 	email = db.Column(db.String(120), index=True, unique=True)
 	landlord_id = db.Column(db.Integer, db.ForeignKey('landlord.id'))
 	unit = db.Column(db.String(10))
+	transactions = db.relationship('Transaction', backref='user', lazy='dynamic')
 
 	def is_authenticated(self):
 		return True
@@ -71,5 +75,32 @@ class User(db.Model):
 	def verify_password(self, password):
 		return pwd_context.verify(password, self.password)
 
+	def generate_auth_token(self, expiration=600):
+		s = Serializer(app.config['SECRET_KEY'], expires_in=expiration)
+		return s.dumps({'id': self.id})
+
+	@staticmethod
+	def verify_auth_token(token):
+		s = Serializer(app.config['SECRET_KEY'])
+		try:
+			data = s.loads(token)
+		except SignatureExpired:
+			return None
+		except BadSignature:
+			return None
+		user = User.query.get(data['id'])
+		return user
+
 	def __repr__(self):
 		return '<User %r>' % (self.username)
+
+class Transaction(db.Model):
+	id = db.Column(db.Integer, primary_key=True)
+	user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+	landlord_id = db.Column(db.Integer, db.ForeignKey('landlord.id'))
+	stripe_charge = db.Column(db.String(140))
+	date = db.Column(db.DateTime)
+	amount = db.Column(db.Integer)
+
+	def __repr__(self):
+		return '<Transaction %r>' % (self.stripe_charge)

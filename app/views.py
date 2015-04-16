@@ -2,7 +2,8 @@ from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm
 from config import STRIPE_CLIENT_ID, STRIPE_SECRET, STRIPE_PUBLISHABLE, ITEMS_PER_PAGE
-from .models import User, Landlord
+from datetime import datetime
+from .models import User, Landlord, Transaction
 from .forms import SignupUserForm, SignupLandlordForm, LoginLandlordForm, LoginUserForm
 from .forms import PropertySelectForm
 import requests
@@ -74,6 +75,12 @@ def userSignUp():
 			return redirect(url_for('userSignUp'))
 		if form.password.data != form.verifyPass.data:
 			flash('Password fields do not match')
+			return redirect(url_for('userSignUp'))
+		if len(form.username.data) < 3:
+			flash('Username must be at least 3 characters long')
+			return redirect(url_for('userSignUp'))
+		if len(form.password.data) < 6:
+			flash('Password must be at least 6 characters long')
 			return redirect(url_for('userSignUp'))
 
 		user = User(username=form.username.data,
@@ -230,7 +237,7 @@ def payrent():
 def charge():
 	amount = request.form['amount']
 	try:
-		amount = int(float(amount)*100)
+		amount = int(float(amount)*100) # convert amount to cents
 	except ValueError, e:
 		flash('Invalid amount entered')
 		return redirect(url_for('payrent'))
@@ -252,10 +259,34 @@ def charge():
 			source=token,
 			stripe_account=landlord.stripe_id,
 			description=g.user.email,
-			application_fee=int(amount*0.01),
+			application_fee=int(amount*0.01), # 1% fee
 			statement_descriptor=landlord.property_name)
 
 	print charge
+	if charge['failure_code'] is not None:
+		error = str(charge['failure_message']) + ' ' + str(charge['failure_code'])
+		return render_template('Charge.html', title='Payment Failure',
+								error=error)
+
+	# Record charge
+	transaction = Transaction(stripe_charge=charge['id'])
+	transaction.user_id = g.user.id
+	transaction.landlord_id = landlord.id
+	transaction.amount = amount
+	transaction.date = datetime.utcnow()
+
+	db.session.add(transaction)
+	db.session.commit()
 
 	return render_template('Charge.html', title='Payment Successful',
-							amount=float(amount/100))
+							amount=amount)
+
+@app.route('/showLandlordTransactions')
+@app.route('/showLandlordTransactions/<int:page>')
+@login_required
+def showLandlordTransactions(page=1):
+	transactions = g.user.transactions.order_by(Transaction.date.desc())
+	transactions = transactions.paginate(page, ITEMS_PER_PAGE, False)
+
+	return render_template('ShowTransactions.html', title='Show Transactions',
+							transactions=transactions)

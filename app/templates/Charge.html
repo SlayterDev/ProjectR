@@ -1,6 +1,14 @@
 {% include "base.html" %}
 
 {% block content %}
+{% if not error %}
+
+<script type="text/javascript" src="/static/js/format.js"></script>
+
 <h1>Payment Successful!</h1>
-<p>You have payed ${{amount}} to "{{g.user.landlord.property_name}}".</p>
+<p>You have payed <strong class="amount">{{amount}}</strong> to "{{g.user.landlord.property_name}}".</p>
+{% else %}
+<h1>Payment Failed</h1>
+<p>{{error}}</p>
+{% endif %}
 {% endblock %}

@@ -1,17 +1,19 @@
 {% extends "base.html" %}
 
 {% block content %}
-  <form action="/charge" method="post">
-    <article>
-      <label>
-        <span>Amount</span>
-      </label>
-      <input type="text" name="amount">
-    </article>
+  <script id="stripe" src="https://checkout.stripe.com/checkout.js"></script>
+  <script type="text/javascript" src="/static/js/payrent.js"></script>
 
-    <br>
-    <script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-            data-key="{{ key }}"
-            data-description="Rent"></script>
-  </form>
+  <article>
+    <label>
+      <span>Amount</span>
+    </label>
+    <input id="amount" type="text" name="amount">
+    <br><br>
+    <button id="customButton">Checkout</button>
+  </article>
+
+  <br>
+  <p style="visibility: hidden;" id="property_name">{{g.user.landlord.property_name}}</p>
+  <p style="visibility: hidden;" id="email">{{g.user.email}}</p>
 {% endblock %}
