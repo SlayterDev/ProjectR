@@ -44,6 +44,10 @@ def apiCharge():
 	token = request.json['token']
 	amount = request.json['amount']
 
+	if token is None or amount is None:
+		return jsonify({'status': 'failure',
+						'reason': 'No token or amount provided'})
+
 	landlord = g.user.landlord
 	if landlord is None:
 		return jsonify({'status': 'failure',
