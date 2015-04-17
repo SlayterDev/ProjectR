@@ -187,6 +187,7 @@ def landlordDashboard():
 							tenants=tenants, clientid=STRIPE_CLIENT_ID)
 
 @app.route('/stripeRedirect')
+@login_required
 def stripeRedirect():
 	error = request.args.get('error')
 	if error is not None:
