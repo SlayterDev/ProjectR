@@ -291,3 +291,13 @@ def showLandlordTransactions(page=1):
 
 	return render_template('ShowTransactions.html', title='Show Transactions',
 							transactions=transactions)
+
+@app.route('/history')
+@app.route('/history/<int:page>')
+@login_required
+def history(page=1):
+	transactions = g.user.transactions.order_by(Transaction.date.desc())
+	transactions = transactions.paginate(page, ITEMS_PER_PAGE, False)
+
+	return render_template('ShowTransactions.html', title='Payment History',
+							transactions=transactions)
