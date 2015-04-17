@@ -11,6 +11,7 @@ db = SQLAlchemy(app)
 
 lm = LoginManager()
 lm.init_app(app)
+lm.login_view = 'login'
 
 app.jinja_env.globals['momentjs'] = momentjs
 

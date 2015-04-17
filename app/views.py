@@ -95,6 +95,18 @@ def userSignUp():
 	return render_template('UserSignup.html', title='Sign Up',
 							form=form)
 
+@app.route('/login')
+def login():
+	dest = request.args.get('next')
+
+	if dest is None:
+		return redirect(url_for('index'))
+
+	if 'landlord' in dest.lower() or 'redirect' in dest.lower():
+		return redirect(url_for('loginLandlord'))
+	else:
+		return redirect(url_for('loginUser'))
+
 @app.route('/loginLandlord', methods=['GET', 'POST'])
 def loginLandlord():
 	if g.user is not None and g.user.is_authenticated():
