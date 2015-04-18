@@ -15,4 +15,15 @@ STRIPE_CLIENT_ID = 'ca_6261GjKW6utegioVEL6MQL4u9lDYAG0Y'
 STRIPE_SECRET = 'sk_test_Q6ot8IbSOOA93Kox65OuxK7D'
 STRIPE_PUBLISHABLE = 'pk_test_sCKWz16ZwHzNJD0QI8b9EUfF'
 
+# mail server settings
+MAIL_SERVER = 'smtp.googlemail.com'
+MAIL_PORT = 465
+MAIL_USE_TLS = False
+MAIL_USE_SSL = True
+MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
+MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
+
+# administrator list
+ADMINS = ['projectrlog@gmail.com']
+
 ITEMS_PER_PAGE = 10
