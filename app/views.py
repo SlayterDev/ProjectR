@@ -130,7 +130,7 @@ def loginLandlord():
 							form=form)
 
 @app.route('/loginUser', methods=['GET', 'POST'])
-def loginUser():
+def loginUser():	
 	if g.user is not None and g.user.is_authenticated():
 		return redirect(url_for('index'))
 

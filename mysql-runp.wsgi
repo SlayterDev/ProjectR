@@ -10,6 +10,8 @@ logging.basicConfig(stream=sys.stderr)
 sys.path.insert(0, "/home/apps/ProjectR/")
 
 os.environ['DATABASE_URL'] = 'mysql://apps:Mixmaster1@localhost/apps'
+os.environ['MAIL_USERNAME'] = 'projectrlog@gmail.com'
+os.environ['MAIL_PASSWORD'] = 'Mixmaster1'
 
 from app import app as application
 application.secret_key = 'Theres-poison-in-the-punch-bowl'
