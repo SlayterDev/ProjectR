@@ -7,8 +7,10 @@
 <table style="border-spacing: 10px;">
 <tr>
 	<td><strong>Date</strong></td>
+	{% if g.user.is_landlord() %}
 	<td><strong>Unit</strong></td>
 	<td><strong>Email</strong></td>
+	{% endif %}
 	<td><strong>Amount</strong></td>
 </tr>
 {% for transaction in transactions.items %}
@@ -20,8 +22,10 @@
 			<p><em>N/A</em></p>
 			{% endif %}
 		</td>
+		{% if g.user.is_landlord() %}
 		<td>{{transaction.user.unit}}</td>
 		<td><p>{{transaction.user.email}}</p></td>
+		{% endif %}
 		<td><p class="amount">{{transaction.amount}}</p></td>
 	</tr>
 {% endfor %}

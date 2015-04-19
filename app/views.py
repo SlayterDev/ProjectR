@@ -95,6 +95,18 @@ def userSignUp():
 	return render_template('UserSignup.html', title='Sign Up',
 							form=form)
 
+@app.route('/login')
+def login():
+	dest = request.args.get('next')
+
+	if dest is None:
+		return redirect(url_for('index'))
+
+	if 'landlord' in dest.lower() or 'redirect' in dest.lower():
+		return redirect(url_for('loginLandlord'))
+	else:
+		return redirect(url_for('loginUser'))
+
 @app.route('/loginLandlord', methods=['GET', 'POST'])
 def loginLandlord():
 	if g.user is not None and g.user.is_authenticated():
@@ -118,7 +130,7 @@ def loginLandlord():
 							form=form)
 
 @app.route('/loginUser', methods=['GET', 'POST'])
-def loginUser():
+def loginUser():	
 	if g.user is not None and g.user.is_authenticated():
 		return redirect(url_for('index'))
 
@@ -187,6 +199,7 @@ def landlordDashboard():
 							tenants=tenants, clientid=STRIPE_CLIENT_ID)
 
 @app.route('/stripeRedirect')
+@login_required
 def stripeRedirect():
 	error = request.args.get('error')
 	if error is not None:
@@ -289,4 +302,14 @@ def showLandlordTransactions(page=1):
 	transactions = transactions.paginate(page, ITEMS_PER_PAGE, False)
 
 	return render_template('ShowTransactions.html', title='Show Transactions',
+							transactions=transactions)
+
+@app.route('/history')
+@app.route('/history/<int:page>')
+@login_required
+def history(page=1):
+	transactions = g.user.transactions.order_by(Transaction.date.desc())
+	transactions = transactions.paginate(page, ITEMS_PER_PAGE, False)
+
+	return render_template('ShowTransactions.html', title='Payment History',
 							transactions=transactions)
