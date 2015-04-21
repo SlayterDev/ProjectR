@@ -46,6 +46,11 @@ def landlordSignUp():
 			flash('Password fields do not match')
 			return redirect(url_for('landlordSignUp'))
 
+		landlord = Landlord.query.filter_by(property_name=form.property_name.data).first()
+		if landlord is not None:
+			flash('A property with that name has already been registered')
+			return redirect(url_for('landlordSignUp'))
+
 		landlord = Landlord(email=form.email.data, 
 							property_name=form.property_name.data)
 		landlord.hash_password(form.password.data)
