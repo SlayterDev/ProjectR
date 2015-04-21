@@ -265,13 +265,27 @@ def charge():
 		flash('An error occured processing your payment')
 		return redirect(url_for('userDashboard'))
 
+	paymentType = request.form['type']
+	userEmail = request.form['email']
+
 	stripe.api_key = STRIPE_SECRET
+
+	print paymentType
+
+	if paymentType == "bitcoin_receiver":
+		print 'Create reciever'
+		reciever = stripe.BitcoinReceiver.create(
+					amount=amount,
+					currency='usd',
+					email=userEmail)
+		token = reciever.id
+	
 	charge = stripe.Charge.create(
 			amount=amount,
 			currency='usd',
 			source=token,
 			stripe_account=landlord.stripe_id,
-			description=g.user.email,
+			description=userEmail,
 			application_fee=int(amount*0.01), # 1% fee
 			statement_descriptor=landlord.property_name)
 
