@@ -5,7 +5,7 @@ from config import STRIPE_CLIENT_ID, STRIPE_SECRET, STRIPE_PUBLISHABLE, ITEMS_PE
 from datetime import datetime
 from .models import User, Landlord, Transaction
 from .forms import SignupUserForm, SignupLandlordForm, LoginLandlordForm, LoginUserForm
-from .forms import PropertySelectForm
+from .forms import PropertySelectForm, VerifyCodeSelectForm
 import requests
 import stripe
 
@@ -167,15 +167,24 @@ def loginUser():
 def userDashboard():
 	return render_template('UserDashboard.html', title='Dashboard')
 
-@app.route('/chooseProperty')
-@app.route('/chooseProperty/<int:page>')
+@app.route('/chooseProperty', methods=['GET', 'POST'])
+@app.route('/chooseProperty/<int:page>', methods=['GET', 'POST'])
 @login_required
 def chooseProperty(page=1):
 	properties = Landlord.query.order_by(Landlord.property_name.asc())
 	properties = properties.paginate(page, ITEMS_PER_PAGE, False)
 
+	form = VerifyCodeSelectForm()
+	if form.validate_on_submit():
+		landlord = Landlord.query.filter_by(verify_string=form.code.data).first()
+		if landlord is None:
+			flash('The code entered does not match any property')
+			return redirect(url_for('chooseProperty', page=page))
+
+		return redirect(url_for('setProperty', name=landlord.property_name))
+
 	return render_template('ChooseProperty.html', title='Choose Property',
-							properties=properties)
+							properties=properties, form=form)
 
 @app.route('/setProperty/<name>', methods=['GET', 'POST'])
 @login_required

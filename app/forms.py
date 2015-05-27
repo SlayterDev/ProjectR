@@ -24,3 +24,6 @@ class LoginUserForm(Form):
 
 class PropertySelectForm(Form):
 	unit = StringField('unit', validators=[DataRequired()])
+
+class VerifyCodeSelectForm(Form):
+	code = StringField('code', validators=[DataRequired()])

@@ -2,6 +2,19 @@
 
 {% block content %}
 <h1>Choose Your Property</h1>
+<div style="display: inline-block">
+	<form action="" method="post" name="enterCode">
+		{{ form.hidden_tag() }}
+		<p>
+			Verification Code:<br>
+			{{ form.code(size=80) }}<br>
+			{% for error in form.code.errors %}
+				<span style="color: red;">[{{error}}]</span>
+			{% endfor %}
+		</p>
+		<p><input type="submit" value="Submit"></p>
+	</form>
+</div>
 {% for property in properties.items %}
 	<p><a href="{{url_for('setProperty', name=property.property_name)}}">{{property.property_name}}</a></p>
 {% endfor %}
