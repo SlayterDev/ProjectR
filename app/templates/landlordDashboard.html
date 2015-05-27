@@ -11,7 +11,7 @@
 <p><a href="{{url_for('showLandlordTransactions')}}">View Latest Payments</a></p>
 {% if g.user.verify_string %}
 <br>
-<p>Your tenants' verify code is <strong>{{ g.user.verify_string }}</strong><br>This code is case sensitve.</p>
+<p>Your unique sign up code is <strong>{{ g.user.verify_string }}</strong><br>Give this code to your tenants for faster easier sign up. This code is case sensitve.</p>
 {% endif %}
 <br>
 <h3>Your Registered Tenants</h3>

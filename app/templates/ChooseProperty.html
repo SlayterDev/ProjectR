@@ -2,17 +2,17 @@
 
 {% block content %}
 <h1>Choose Your Property</h1>
-<div style="display: inline-block">
+<div style="display: inline-block;">
 	<form action="" method="post" name="enterCode">
 		{{ form.hidden_tag() }}
 		<p>
-			Verification Code:<br>
-			{{ form.code(size=80) }}<br>
+			Sign Up Code: (6 digit code given to you by your landlord. Optional)<br>
+			{{ form.code(size=15) }}
 			{% for error in form.code.errors %}
 				<span style="color: red;">[{{error}}]</span>
 			{% endfor %}
+			<input type="submit" value="Submit">
 		</p>
-		<p><input type="submit" value="Submit"></p>
 	</form>
 </div>
 {% for property in properties.items %}
