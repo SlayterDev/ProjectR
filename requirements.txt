@@ -24,3 +24,4 @@ sqlparse==0.1.11
 stripe==1.22.2
 requests==2.6.0
 passlib==1.6.2
+hashlib

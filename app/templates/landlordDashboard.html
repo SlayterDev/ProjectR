@@ -9,6 +9,10 @@
 <a href="https://connect.stripe.com/oauth/authorize?response_type=code&client_id={{clientid}}&scope=read_write" class="stripe-connect"><span>Connect with Stripe</span></a>
 {% endif %}
 <p><a href="{{url_for('showLandlordTransactions')}}">View Latest Payments</a></p>
+{% if g.user.verify_string %}
+<br>
+<p>Your tenants' verify code is <strong>{{ g.user.verify_string }}</strong><br>This code is case sensitve.</p>
+{% endif %}
 <br>
 <h3>Your Registered Tenants</h3>
 <table style="border-spacing: 10px;">

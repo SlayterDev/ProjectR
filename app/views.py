@@ -56,6 +56,12 @@ def landlordSignUp():
 		landlord.hash_password(form.password.data)
 		db.session.add(landlord)
 		db.session.commit()
+
+		# Create verification code
+		landlord.create_verify_code()
+		db.session.add(landlord)
+		db.session.commit()
+
 		login_user(landlord, remember=False)
 		flash('Signed up and logged in!')
 		return redirect(url_for('landlordDashboard'))

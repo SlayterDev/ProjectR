@@ -6,7 +6,7 @@ import stripe
 
 from config import basedir
 from app import app, db
-from app.models import User
+from app.models import User, Landlord
 from coverage import coverage
 
 cov = coverage(branch=True, omit=['flask/*', 'tests.py'])
@@ -40,6 +40,35 @@ class TestCase(unittest.TestCase):
 		assert u.verify_password('password')
 		token = u.generate_auth_token()
 		assert User.verify_auth_token(token) != None
+
+	def test_verify_string_uniqueness(self):
+		l = Landlord(email='place1@email.com', property_name='Place1')
+		db.session.add(l)
+		db.session.commit()
+
+		l.create_verify_code()
+		db.session.add(l)
+		db.session.commit()
+
+		l = Landlord(email='place2@email.com', property_name='Place2')
+		db.session.add(l)
+		db.session.commit()
+
+		l.create_verify_code()
+		db.session.add(l)
+		db.session.commit()
+
+		l = Landlord(email='place3@email.com', property_name='Place3')
+		db.session.add(l)
+		db.session.commit()
+
+		l.create_verify_code()
+		db.session.add(l)
+		db.session.commit()
+
+		verifyCode = l.verify_string
+		properties = Landlord.query.filter_by(verify_string=verifyCode).all()
+		assert len(properties) == 1
 
 if __name__ == '__main__':
 	try:

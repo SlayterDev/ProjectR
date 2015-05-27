@@ -2,12 +2,14 @@ from app import app, db
 from passlib.apps import custom_app_context as pwd_context
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import SignatureExpired, BadSignature
+import hashlib
 
 class Landlord(db.Model):
 	id = db.Column(db.Integer, primary_key=True)
 	email = db.Column(db.String(120), index=True, unique=True)
 	password = db.Column(db.String(154))
 	property_name = db.Column(db.String(140), index=True, unique=True)
+	verify_string = db.Column(db.String(4), index=True, unique=True)
 	stripe_id = db.Column(db.String(140))
 	stripe_key = db.Column(db.String(140))
 	stripe_refresh = db.Column(db.String(140))
@@ -38,6 +40,12 @@ class Landlord(db.Model):
 
 	def verify_password(self, password):
 		return pwd_context.verify(password, self.password)
+
+	def create_verify_code(self):
+		s = hashlib.sha1()
+		s.update(str(self.id))
+		hashVal = s.hexdigest()
+		self.verify_string = hashVal[:6]
 
 	def __repr__(self):
 		return '<Landlord %r>' % (self.property_name)
