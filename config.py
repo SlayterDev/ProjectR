@@ -10,6 +10,7 @@ SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 
 WTF_CSRF_ENABLED = True
 SECRET_KEY = 'There-is-poison-in-the-punchbowl'
+WHOOSH_BASE = os.path.join(basedir, 'search.db')
 
 STRIPE_CLIENT_ID = 'ca_6261GjKW6utegioVEL6MQL4u9lDYAG0Y'
 STRIPE_SECRET = 'sk_test_Q6ot8IbSOOA93Kox65OuxK7D'
@@ -26,4 +27,5 @@ MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
 # administrator list
 ADMINS = ['projectrlog@gmail.com']
 
-ITEMS_PER_PAGE = 10
+ITEMS_PER_PAGE = 25
+MAX_SEARCH_RESULTS = 25

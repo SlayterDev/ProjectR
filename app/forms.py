@@ -27,3 +27,6 @@ class PropertySelectForm(Form):
 
 class VerifyCodeSelectForm(Form):
 	code = StringField('code', validators=[DataRequired()])
+
+class SearchForm(Form):
+	search = StringField('search', validators=[DataRequired()])

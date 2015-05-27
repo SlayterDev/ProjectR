@@ -3,8 +3,11 @@ from passlib.apps import custom_app_context as pwd_context
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from itsdangerous import SignatureExpired, BadSignature
 import hashlib
+import flask.ext.whooshalchemy as whooshalchemy
 
 class Landlord(db.Model):
+	__searchable__ = ['property_name']
+
 	id = db.Column(db.Integer, primary_key=True)
 	email = db.Column(db.String(120), index=True, unique=True)
 	password = db.Column(db.String(154))
@@ -49,6 +52,8 @@ class Landlord(db.Model):
 
 	def __repr__(self):
 		return '<Landlord %r>' % (self.property_name)
+
+whooshalchemy.whoosh_index(app, Landlord)
 
 class User(db.Model):
 	id = db.Column(db.Integer, primary_key=True)

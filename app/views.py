@@ -1,11 +1,11 @@
 from flask import render_template, flash, redirect, session, url_for, request, g
 from flask.ext.login import login_user, logout_user, current_user, login_required
 from app import app, db, lm
-from config import STRIPE_CLIENT_ID, STRIPE_SECRET, STRIPE_PUBLISHABLE, ITEMS_PER_PAGE
+from config import STRIPE_CLIENT_ID, STRIPE_SECRET, STRIPE_PUBLISHABLE, ITEMS_PER_PAGE, MAX_SEARCH_RESULTS
 from datetime import datetime
 from .models import User, Landlord, Transaction
 from .forms import SignupUserForm, SignupLandlordForm, LoginLandlordForm, LoginUserForm
-from .forms import PropertySelectForm, VerifyCodeSelectForm
+from .forms import PropertySelectForm, VerifyCodeSelectForm, SearchForm
 import requests
 import stripe
 
@@ -183,8 +183,25 @@ def chooseProperty(page=1):
 
 		return redirect(url_for('setProperty', name=landlord.property_name))
 
+	searchForm = SearchForm()
+	if searchForm.validate_on_submit():
+		return redirect(url_for('search_results', query=searchForm.search.data))
+
 	return render_template('ChooseProperty.html', title='Choose Property',
-							properties=properties, form=form)
+							properties=properties, form=form, searchForm=searchForm)
+
+@app.route('/search_results/<query>', methods=['GET', 'POST'])
+@login_required
+def search_results(query):
+	results = Landlord.query.whoosh_search(query, MAX_SEARCH_RESULTS).all()
+
+	searchForm = SearchForm()
+	if searchForm.validate_on_submit():
+		return redirect(url_for('search_results', query=searchForm.search.data))
+
+	return render_template('search_results.html', query=query,
+							results=results, title='Search Results',
+							searchForm=searchForm)
 
 @app.route('/setProperty/<name>', methods=['GET', 'POST'])
 @login_required
